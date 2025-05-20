@@ -1,0 +1,30 @@
+version: '3.9'
+
+services:
+  ssb-db:
+    container_name: ssb-db
+    image: postgres:16-alpine
+    ports:
+      - 6540:5432
+    environment:
+      - POSTGRES_DB=ssb-main
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+    volumes:
+      - pgdata:/var/lib/postgresql/ssb-data
+
+  ssb-app:
+    container_name: ssb-app
+    image: sport-support-bot:0.0.1
+    build: .
+    ports:
+      - "9090:9090"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://ssb-db:5432/ssd-main
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+    depends_on:
+      - ssb-db
+
+volumes:
+  pgdata: {}
